@@ -1,0 +1,20 @@
+{
+  "name": "trip-booking-lab",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n web,api \"npm run dev -w @trip/web\" \"npm run dev -w @trip/api\"",
+    "build": "npm run build --workspaces",
+    "check": "npm run lint -w @trip/web && npm run typecheck -w @trip/api",
+    "test": "npm run test -w @trip/web"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5"
+  }
+}
