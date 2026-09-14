@@ -1,3 +1,5 @@
+import TripPage from "./features/trips/TripPage";
+
 export default function App() {
   return (
     <main>
@@ -9,6 +11,7 @@ export default function App() {
         <h2 id="ticket-title">Danh sách chuyến xe</h2>
         <p>Bắt đầu với dữ liệu mẫu, component TripCard và các trạng thái loading, error, empty.</p>
         <p>Đọc yêu cầu trong <code>docs/tickets/FE-001.md</code> trước khi triển khai.</p>
+        <TripPage />
       </section>
     </main>
   )
