@@ -36,3 +36,11 @@ Redux-Saga đã nối vào store, chưa có watcher nghiệp vụ. Dữ liệu m
 ## Git
 
 Môi trường khởi tạo chặn ghi thư mục .git. Để bắt đầu quản lý phiên bản, chạy `git init -b main` từ terminal của bạn trong thư mục project.
+
+## Tailwind CSS
+
+Frontend dùng Tailwind qua plugin @tailwindcss/vite. CSS entry là apps/web/src/index.css; cấu hình cơ bản không cần tailwind.config.js hay PostCSS riêng.
+
+Dùng trực tiếp trong JSX: `<div className="rounded-xl bg-white p-6 shadow-sm">Nội dung</div>`. Viết đầy đủ class (ví dụ `text-red-600`), tránh nối chuỗi như `text-${color}-600`. CSS giao diện mẫu nằm trong layer base để utilities có thể ghi đè.
+
+Nếu dev server đang chạy trước lúc cài, dừng và chạy lại `bash scripts/npm.sh run dev`.

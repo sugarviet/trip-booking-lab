@@ -1,9 +1,14 @@
-* { box-sizing: border-box; }
-body { margin: 0; background: #f3f6fa; color: #152c40; font-family: system-ui, sans-serif; line-height: 1.65; }
-main { max-width: 900px; margin: 0 auto; padding: 80px 24px; }
-h1 { font-size: clamp(2.4rem, 7vw, 4rem); letter-spacing: -.045em; margin: 16px 0; line-height: 1.1; }
-h2 { margin-bottom: 8px; }
-.eyebrow { font-size: .75rem; letter-spacing: .12em; color: #426174; font-weight: 700; }
-section { margin-top: 40px; padding: 28px; border: 1px solid #d7e1e9; border-radius: 16px; background: white; }
-.badge { background: #d9f6eb; color: #165b43; border-radius: 6px; padding: 5px 9px; font-size: .75rem; font-weight: 700; }
-code { overflow-wrap: anywhere; }
+@import "tailwindcss";
+
+/* Keep starter styles in base so Tailwind utilities can override them. */
+@layer base {
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #f3f6fa; color: #152c40; font-family: system-ui, sans-serif; line-height: 1.65; }
+  main { max-width: 900px; margin: 0 auto; padding: 80px 24px; }
+  h1 { font-size: clamp(2.4rem, 7vw, 4rem); letter-spacing: -.045em; margin: 16px 0; line-height: 1.1; }
+  h2 { margin-bottom: 8px; }
+  .eyebrow { font-size: .75rem; letter-spacing: .12em; color: #426174; font-weight: 700; }
+  section { margin-top: 40px; padding: 28px; border: 1px solid #d7e1e9; border-radius: 16px; background: white; }
+  .badge { background: #d9f6eb; color: #165b43; border-radius: 6px; padding: 5px 9px; font-size: .75rem; font-weight: 700; }
+  code { overflow-wrap: anywhere; }
+}
