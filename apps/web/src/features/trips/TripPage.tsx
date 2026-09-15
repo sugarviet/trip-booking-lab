@@ -1,52 +1,33 @@
 import { useEffect, useState } from 'react'
 import TripList from './components/TripList'
-import { fetchTrips } from './trips.service'
 import type { MockMode } from './trips.service'
 import type { Trip } from './types'
+import { useAppDispatch, useAppSelector } from '../../app/hooks'
+import { fetchTripsRequested } from './trips.slice'
 
 const TripPage = () => {
+  const dispatch = useAppDispatch();
+
+  const {data: trips, loading, error} = useAppSelector(state => state.trips)
+
+
   const [mode, setMode] = useState<MockMode>('success')
-  const [attempt, setAttempt] = useState(0)
-  const [trips, setTrips] = useState<Trip[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null)
 
-  function resetRequestState() {
-    setLoading(true)
-    setError(null)
-    setSelectedTrip(null)
-  }
+  useEffect(() => {
+    dispatch(fetchTripsRequested({ mode }))
+  }, [dispatch, mode])
+
 
   function handleModeChange(nextMode: MockMode) {
-    resetRequestState()
+    setSelectedTrip(null)
     setMode(nextMode)
   }
 
   function handleRetry() {
-    resetRequestState()
-    setAttempt(value => value + 1)
+    setSelectedTrip(null)
+    dispatch(fetchTripsRequested({mode}))
   }
-
-  useEffect(() => {
-    // Mỗi effect có cờ riêng; response cũ không được cập nhật giao diện.
-    let ignore = false
-
-    async function load() {
-      try {
-        const data = await fetchTrips(mode)
-        if (!ignore) setTrips(data)
-      } catch (cause) {
-        if (!ignore) {
-          setError(cause instanceof Error ? cause.message : 'Không thể tải chuyến xe.')
-        }
-      } finally {
-        if (!ignore) setLoading(false)
-      }
-    }
-    void load()
-    return () => { ignore = true }
-  }, [mode, attempt])
 
   return (
     <div className="mt-6 space-y-4">

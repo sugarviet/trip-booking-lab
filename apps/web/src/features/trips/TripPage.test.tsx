@@ -1,10 +1,30 @@
 import { act, render, screen } from '@testing-library/react'
+import { Provider } from 'react-redux'
 import userEvent from '@testing-library/user-event'
-import { beforeEach, expect, it, vi } from 'vitest'
+import { beforeEach, expect, it, vi, afterEach } from 'vitest'
 import TripPage from './TripPage'
 import { fetchTrips } from './trips.service'
 import { tripsFixture } from './trips.fixture'
 import type { Trip } from './types'
+import { createAppStore } from '../../app/store'
+
+let testApp: ReturnType<typeof createAppStore> | undefined
+
+function renderTripPage() {
+  testApp = createAppStore()
+
+  return render(
+    <Provider store={testApp.store}>
+      <TripPage />
+    </Provider>,
+  )
+}
+
+
+afterEach(() => {
+  testApp?.sagaTask.cancel()
+  testApp = undefined
+})
 
 vi.mock('./trips.service', () => ({ fetchTrips: vi.fn() }))
 const fetchMock = vi.mocked(fetchTrips)
@@ -14,7 +34,7 @@ it('hiển thị loading rồi dữ liệu, và chuyến đã chọn', async () 
   let resolve!: (trips: Trip[]) => void
   fetchMock.mockReturnValue(new Promise(r => { resolve = r }))
   const user = userEvent.setup()
-  render(<TripPage />)
+  renderTripPage()
   expect(screen.getByRole('status')).toHaveTextContent('Đang tải')
   await act(async () => resolve(tripsFixture))
   await user.click(screen.getAllByRole('button', { name: 'Chọn chuyến' })[0])
@@ -26,7 +46,7 @@ it('xóa lỗi khi thử lại và hiển thị kết quả thành công', async
   fetchMock.mockRejectedValueOnce(new Error('Mất kết nối'))
     .mockImplementationOnce(() => new Promise(r => { resolve = r }))
   const user = userEvent.setup()
-  render(<TripPage />)
+  renderTripPage()
   expect(await screen.findByRole('alert')).toHaveTextContent('Mất kết nối')
   await user.click(screen.getByRole('button', { name: 'Thử lại' }))
   expect(screen.queryByRole('alert')).not.toBeInTheDocument()
@@ -37,7 +57,7 @@ it('xóa lỗi khi thử lại và hiển thị kết quả thành công', async
 
 it('hiển thị trạng thái rỗng', async () => {
   fetchMock.mockResolvedValue([])
-  render(<TripPage />)
+  renderTripPage()
   expect(await screen.findByText('Chưa có chuyến nào')).toBeInTheDocument()
 })
 
@@ -46,7 +66,7 @@ it('bỏ qua response cũ khi đổi chế độ', async () => {
   fetchMock.mockImplementationOnce(() => new Promise(r => { resolveOld = r }))
     .mockResolvedValueOnce([])
   const user = userEvent.setup()
-  render(<TripPage />)
+  renderTripPage()
   await user.selectOptions(screen.getByLabelText('Chế độ dữ liệu mẫu'), 'empty')
   expect(await screen.findByText('Chưa có chuyến nào')).toBeInTheDocument()
   await act(async () => resolveOld(tripsFixture))
@@ -59,7 +79,7 @@ it('kiểm tra khi đổi chế độ thành chưa có chuyến nào', async() =
   fetchMock.mockReturnValue(new Promise(r => { resolve = r }))
   const user = userEvent.setup()
 
-  render(<TripPage />)
+  renderTripPage()
   expect(screen.getByRole('status')).toHaveTextContent('Đang tải')
   await act(async () => resolve(tripsFixture))
   await user.click(screen.getAllByRole('button', { name: 'Chọn chuyến' })[0])
